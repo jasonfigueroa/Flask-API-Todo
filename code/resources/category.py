@@ -1,17 +1,25 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from models.category import CategoryModel
 
 class Category(Resource):
-	def __init__(self):
-		pass
+	parser = reqparse.RequestParser()
+	parser.add_argument('name',
+		type=str,
+		required=True,
+		help="A name must be provided to crete a category"
+	)
 
-	def get(self, name):
-		category = CategoryModel.find_by_name(name)
+	def get(self, _id):
+		category = CategoryModel.find_by_id(_id)
 		if category:
 			return category.json()
 		return {"message": "Category was not found."}, 404
 
-	def post(self, name):
+	def post(self):
+		data = Category.parser.parse_args()
+
+		name = data['name']
+
 		category = CategoryModel.find_by_name(name)
 
 		if category:
@@ -26,8 +34,8 @@ class Category(Resource):
 
 		return category.json(), 201
 
-	def delete(self, name):
-		category = CategoryModel.find_by_name(name)
+	def delete(self, _id):
+		category = CategoryModel.find_by_id(_id)
 
 		if category:
 			category.delete_from_db()
