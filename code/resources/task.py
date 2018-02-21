@@ -28,8 +28,7 @@ class Task(Resource):
 			return {"message": "Not authorized to view this content"}
 		if task:
 			return task.json()
-		return {"message": "Task not found."}
-		# return {"current_identity": "{}".format(current_identity.id)}
+		return {"message": "Task not found."}, 404
 
 	@jwt_required()
 	def post(self):
@@ -43,7 +42,7 @@ class Task(Resource):
 			return {"message": "Task '{}', already exists.".format(title)}
 		
 		category = CategoryModel.find_by_name(category_name)
-		# want to programatically derive the user_id
+
 		task = TaskModel(title, current_identity.id, category.id)
 		
 		try:
@@ -53,12 +52,20 @@ class Task(Resource):
 
 		return task.json(), 201
 
+	@jwt_required()
 	def delete(self, _id):
 		task = TaskModel.find_by_id(_id)
+		if task and current_identity.id != task.user_id:
+			return {"message": "Not authorized to delete this content"}
 		if task:
 			task.delete_from_db()
-		return {"message": "Task deleted."}
+			return {"message": "Task deleted."}
+		return {"message": "Task with id {}, was not found".format(_id)}
 
 class TaskList(Resource):
+	@jwt_required()
 	def get(self):
-		return {"tasks": [task.json() for task in TaskModel.query.all()]}
+		user_tasks = [task.json() if task.user_id == current_identity.id else '' for task in TaskModel.query.all()]
+		if user_tasks[0] == '' and user_tasks[1] == '' and user_tasks[2] == '':
+			return {"message": "Active user has not registered tasks"}
+		return {"tasks": user_tasks}
