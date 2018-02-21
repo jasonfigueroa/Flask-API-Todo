@@ -5,6 +5,7 @@ class CategoryModel(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(80))
+	# archived = 
 
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	user = db.relationship('UserModel')
