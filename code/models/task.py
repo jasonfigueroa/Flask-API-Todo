@@ -1,4 +1,5 @@
 from db import db
+from models.category import CategoryModel
 
 class TaskModel(db.Model):
 	__tablename__ = 'tasks'
@@ -18,11 +19,17 @@ class TaskModel(db.Model):
 		self.category_id = category_id
 
 	def json(self):
-		return {'title': self.title}
+		category = CategoryModel.find_by_id(self.category_id)
+		return {'id': self.id,'title': self.title, 'category': category.name}
 
 	@classmethod
-	def find_by_title(cls, title):
-		return cls.query.filter_by(title=title).first()
+	def find_by_title(cls, title, user_id):
+		subquery = cls.query.filter_by(title=title)
+		return subquery.filter_by(user_id=user_id).first()
+
+	@classmethod
+	def find_by_id(cls, _id):
+		return cls.query.filter_by(id=_id).first()
 
 	def save_to_db(self):
 		db.session.add(self)

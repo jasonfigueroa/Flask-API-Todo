@@ -21,9 +21,9 @@ def create_tables():
 jwt = JWT(app, authenticate, identity)
 
 api.add_resource(UserRegister, '/register')
-api.add_resource(Category, '/category/<string:name>')
+api.add_resource(Category, '/category', '/category/<_id>')
 api.add_resource(CategoryList, '/categories')
-api.add_resource(Task, '/task/<string:title>')
+api.add_resource(Task, '/task', '/task/<_id>')
 api.add_resource(TaskList, '/tasks')
 
 if __name__ == '__main__':
