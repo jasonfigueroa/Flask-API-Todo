@@ -10,7 +10,7 @@ class TaskModel(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	user = db.relationship('UserModel')
 
-	category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+	category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
 	category = db.relationship('CategoryModel')
 
 	def __init__(self, title, user_id, category_id):
