@@ -58,17 +58,12 @@ class Task(Resource):
 	def put(self, _id):
 		data = Task.parser.parse_args()
 		
-		# title = data['title']
-		# category_name = data['category_name']
 		complete = data['complete']
 
 		task = TaskModel.find_by_id(_id, current_identity.id)
 		if task is None:
 			return {"message": "Task with id '{}', does not exist.".format(title)}, 400
 		
-		# category = CategoryModel.find_by_name(category_name)
-
-		# task = TaskModel(title, current_identity.id, category.id)
 		task.complete = complete
 		
 		try:
@@ -80,7 +75,7 @@ class Task(Resource):
 
 	@jwt_required()
 	def delete(self, _id):
-		task = TaskModel.find_by_id(_id)
+		task = TaskModel.find_by_id(_id, current_identity.id)
 		if task and current_identity.id != task.user_id:
 			return {"message": "Not authorized to delete this content"}, 401
 		if task:

@@ -22,7 +22,7 @@ class TaskModel(db.Model):
 
 	def json(self):
 		category = CategoryModel.find_by_id(self.category_id)
-		return {'id': self.id,'title': self.title, 'complete': self.complete, 'category': category.name}
+		return {'id': self.id,'title': self.title, 'complete': self.complete, 'category_name': category.name}
 
 	@classmethod
 	def find_by_title(cls, title, user_id):
