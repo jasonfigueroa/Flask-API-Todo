@@ -59,12 +59,12 @@ class Category(Resource):
 class CategoryList(Resource):
 	@jwt_required()
 	def get(self):
-		user_categories = [category.json() if category.user_id == current_identity.id else '' for category in CategoryModel.query.all()]
+		user_categories = [category.json() for category in CategoryModel.query.all() if category.user_id == current_identity.id]
 
-		if len(user_categories) < 1:
-			return {"message": "The database currently has no categories for any users"}, 400
+		# if len(user_categories) < 1:
+		# 	return {"message": "The database currently has no categories for any users"}, 400
 		
-		if user_categories[0] == '':
-			return {"message": "Active user has no registered categories"}, 404
+		# if user_categories[0] == '':
+		# 	return {"message": "Active user has no registered categories"}, 404
 		
 		return {"categories": user_categories}
